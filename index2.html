@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<html>
+    <title>PhysicsQuest - AP Physics 1</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
+
+    <style>
+
+        body {
+
+            font-family: 'Nunito', sans-serif;
+
+            background-color: #f7f9fc;
+
+        }
+
+        .progress-bar {
+
+            transition: width 0.5s ease-in-out;
+
+        }
+
+        .concept-card {
+
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        }
+
+        .concept-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+        }
+
+        .quiz-option {
+
+            transition: all 0.2s ease;
+
+        }
+
+        .quiz-option:hover {
+
+            background-color: #f0f9ff;
+
+        }
+
+        .quiz-option.selected {
+
+            background-color: #dbeafe;
+
+            border-color: #3b82f6;
+
+        }
+
+        .quiz-option.correct {
+
+            background-color: #d1fae5;
+
+            border-color: #10b981;
+
+        }
+
+        .quiz-option.incorrect {
+
+            background-color: #fee2e2;
+
+            border-color: #ef4444;
+
+        }
+
+        .streak-flame {
+
+            animation: flicker 1.5s infinite alternate;
+
+        }
+
+        @keyframes flicker {
+
+            0%, 100% { opacity: 1; }
+
+            50% { opacity: 0.8; }
+
+        }
+
+        .tab-active {
+
+            border-bottom: 3px solid #3b82f6;
+
+            color: #1e40af;
+
+        }
+
+    </style>
+
+
+
+    <div class="min-h-screen flex flex-col">
+
+        <!-- Header -->
+
+        <header class="bg-white shadow-sm">
+
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+
+                <div class="flex items-center space-x-2">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+
+                    </svg>
+
+                    <h1 class="text-2xl font-bold text-blue-800">PhysicsQuest</h1>
+
+                </div>
+
+                <div class="flex items-center space-x-6">
+
+                    <div class="hidden md:flex items-center space-x-1">
+
+                        <div class="flex items-center">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 streak-flame" viewBox="0 0 20 20" fill="currentColor">
+
+                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+
+                            </svg>
+
+                            <span class="font-bold text-gray-700 ml-1">5 Day Streak</span>
+
+                        </div>
+
+                        <div class="flex items-center ml-4">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+
+                                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+
+                            </svg>
+
+                            <span class="font-bold text-gray-700 ml-1">850 XP</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="flex items-center">
+
+                        <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+
+                            JS
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Progress Bar -->
+
+        <div class="bg-blue-50 py-2 px-4 border-b border-blue-100">
+
+            <div class="container mx-auto">
+
+                <div class="flex items-center justify-between">
+
+                    <div class="text-sm text-blue-800 font-semibold">AP Physics 1 Progress: 42%</div>
+
+                    <div class="text-sm text-blue-800">Next Goal: Complete Kinematics</div>
+
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+
+                    <div class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 42%"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Main Content -->
+
+        <main class="flex-grow container mx-auto px-4 py-6">
+
+            <!-- Tabs -->
+
+            <div class="flex border-b border-gray-200 mb-6">
+
+                <button class="px-4 py-2 font-medium text-gray-600 hover:text-blue-800 tab-active">Learn</button>
+
+                <button class="px-4 py-2 font-medium text-gray-600 hover:text-blue-800">Practice</button>
+
+                <button class="px-4 py-2 font-medium text-gray-600 hover:text-blue-800">Test Prep</button>
+
+                <button class="px-4 py-2 font-medium text-gray-600 hover:text-blue-800">Videos</button>
+
+            </div>
+
+
+            <!-- Current Unit -->
+
+            <div class="mb-8">
+
+                <div class="flex justify-between items-center mb-4">
+
+                    <h2 class="text-xl font-bold text-gray-800">Current Unit: Kinematics</h2>
+
+                    <div class="flex items-center">
+
+                        <div class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">3/5 Concepts Mastered</div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Concept Cards -->
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    <!-- Concept 1 -->
+
+                    <div class="concept-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex justify-between items-start">
+
+                                <div>
+
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Mastered</span>
+
+                                    <h3 class="mt-2 text-lg font-semibold text-gray-800">Position &amp; Displacement</h3>
+
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Learn about position vectors and displacement in one and two dimensions.</p>
+
+                            <div class="mt-4 flex justify-between items-center">
+
+                                <span class="text-xs text-gray-500">Estimated time: 15 min</span>
+
+                                <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Review</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Concept 2 -->
+
+                    <div class="concept-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex justify-between items-start">
+
+                                <div>
+
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Mastered</span>
+
+                                    <h3 class="mt-2 text-lg font-semibold text-gray-800">Velocity &amp; Speed</h3>
+
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Understand the difference between velocity and speed, and how to calculate them.</p>
+
+                            <div class="mt-4 flex justify-between items-center">
+
+                                <span class="text-xs text-gray-500">Estimated time: 20 min</span>
+
+                                <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Review</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Concept 3 -->
+
+                    <div class="concept-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex justify-between items-start">
+
+                                <div>
+
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Mastered</span>
+
+                                    <h3 class="mt-2 text-lg font-semibold text-gray-800">Acceleration</h3>
+
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Learn how acceleration changes velocity over time and solve related problems.</p>
+
+                            <div class="mt-4 flex justify-between items-center">
+
+                                <span class="text-xs text-gray-500">Estimated time: 25 min</span>
+
+                                <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Review</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Concept 4 -->
+
+                    <div class="concept-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex justify-between items-start">
+
+                                <div>
+
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">In Progress</span>
+
+                                    <h3 class="mt-2 text-lg font-semibold text-gray-800">Motion Equations</h3>
+
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Master the kinematic equations for constant acceleration motion.</p>
+
+                            <div class="mt-4 flex justify-between items-center">
+
+                                <span class="text-xs text-gray-500">Estimated time: 30 min</span>
+
+                                <button class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Continue</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Concept 5 -->
+
+                    <div class="concept-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex justify-between items-start">
+
+                                <div>
+
+                                    <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">Locked</span>
+
+                                    <h3 class="mt-2 text-lg font-semibold text-gray-800">Projectile Motion</h3>
+
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Analyze the motion of objects launched into the air under gravity.</p>
+
+                            <div class="mt-4 flex justify-between items-center">
+
+                                <span class="text-xs text-gray-500">Estimated time: 35 min</span>
+
+                                <button class="px-3 py-1 bg-gray-300 text-gray-600 text-sm rounded cursor-not-allowed">Unlock</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Current Lesson -->
+
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Motion Equations - Interactive Lesson</h2>
+
+                
+
+                <div class="mb-6">
+
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+
+                        <div class="flex">
+
+                            <div class="flex-shrink-0">
+
+                                <svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+
+                                </svg>
+
+                            </div>
+
+                            <div class="ml-3">
+
+                                <p class="text-sm text-blue-800">
+
+                                    The kinematic equations describe the motion of objects under constant acceleration. These equations are fundamental to solving physics problems.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-800 mb-2">The Four Kinematic Equations:</h3>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+
+                                <p class="mb-2 font-mono">v = v₀ + at</p>
+
+                                <p class="mb-2 font-mono">x = x₀ + v₀t + ½at²</p>
+
+                                <p class="mb-2 font-mono">v² = v₀² + 2a(x - x₀)</p>
+
+                                <p class="font-mono">x - x₀ = ½(v₀ + v)t</p>
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-800 mb-2">Variables:</h3>
+
+                            <ul class="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-lg">
+
+                                <li><span class="font-mono">v</span>: final velocity</li>
+
+                                <li><span class="font-mono">v₀</span>: initial velocity</li>
+
+                                <li><span class="font-mono">a</span>: acceleration</li>
+
+                                <li><span class="font-mono">t</span>: time</li>
+
+                                <li><span class="font-mono">x</span>: final position</li>
+
+                                <li><span class="font-mono">x₀</span>: initial position</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-6">
+
+                        <h3 class="font-semibold text-gray-800 mb-2">Interactive Example:</h3>
+
+                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                            <p class="mb-4">A car accelerates from rest at 3 m/s² for 8 seconds. Calculate:</p>
+
+                            <div class="space-y-4">
+
+                                <div>
+
+                                    <p class="mb-1">1. The final velocity of the car</p>
+
+                                    <div class="flex items-center space-x-2">
+
+                                        <input type="number" id="answer1" class="border rounded px-3 py-2 w-24" placeholder="?">
+
+                                        <span>m/s</span>
+
+                                        <button onclick="checkAnswer(1)" class="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Check</button>
+
+                                        <span id="feedback1" class="ml-2 text-sm"></span>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <p class="mb-1">2. The distance traveled by the car</p>
+
+                                    <div class="flex items-center space-x-2">
+
+                                        <input type="number" id="answer2" class="border rounded px-3 py-2 w-24" placeholder="?">
+
+                                        <span>m</span>
+
+                                        <button onclick="checkAnswer(2)" class="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Check</button>
+
+                                        <span id="feedback2" class="ml-2 text-sm"></span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="border-t pt-4">
+
+                    <h3 class="font-semibold text-gray-800 mb-3">Quick Quiz</h3>
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <p class="mb-3">Which equation would you use to find the final velocity if you know the initial velocity, acceleration, and displacement (but not time)?</p>
+
+                        <div class="space-y-2" id="quiz-options">
+
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-option="A">
+
+                                <span class="font-mono">v = v₀ + at</span>
+
+                            </div>
+
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-option="B">
+
+                                <span class="font-mono">x = x₀ + v₀t + ½at²</span>
+
+                            </div>
+
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-option="C">
+
+                                <span class="font-mono">v² = v₀² + 2a(x - x₀)</span>
+
+                            </div>
+
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-option="D">
+
+                                <span class="font-mono">x - x₀ = ½(v₀ + v)t</span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mt-4 hidden" id="quiz-feedback">
+
+                            <div class="bg-green-100 border-l-4 border-green-500 p-3" id="correct-feedback">
+
+                                <p class="text-green-700">Correct! The equation v² = v₀² + 2a(x - x₀) allows you to find the final velocity without knowing the time.</p>
+
+                            </div>
+
+                            <div class="bg-red-100 border-l-4 border-red-500 p-3" id="incorrect-feedback">
+
+                                <p class="text-red-700">Not quite. Try again! Think about which equation doesn't include time as a variable.</p>
+
+                            </div>
+
+                        </div>
+
+                        <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition" id="continue-btn">Continue to Next Section</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Recommended Practice -->
+
+            <div class="mb-8">
+
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Recommended Practice</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex items-center justify-between">
+
+                                <h3 class="font-semibold text-gray-800">Kinematics Problem Set</h3>
+
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">+50 XP</span>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Practice solving various kinematics problems with step-by-step guidance.</p>
+
+                            <button class="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Start Practice</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex items-center justify-between">
+
+                                <h3 class="font-semibold text-gray-800">Motion Graphs</h3>
+
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">+40 XP</span>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Learn to interpret position, velocity, and acceleration graphs.</p>
+
+                            <button class="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Start Practice</button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+
+                        <div class="p-4">
+
+                            <div class="flex items-center justify-between">
+
+                                <h3 class="font-semibold text-gray-800">Free Fall Challenge</h3>
+
+                                <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Challenge</span>
+
+                            </div>
+
+                            <p class="mt-2 text-sm text-gray-600">Test your understanding with advanced free fall problems.</p>
+
+                            <button class="mt-4 w-full px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">Accept Challenge</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- Footer -->
+
+        <footer class="bg-gray-800 text-white py-6">
+
+            <div class="container mx-auto px-4">
+
+                <div class="flex flex-col md:flex-row justify-between items-center">
+
+                    <div class="mb-4 md:mb-0">
+
+                        <h2 class="text-xl font-bold flex items-center">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+
+                            </svg>
+
+                            PhysicsQuest
+
+                        </h2>
+
+                        <p class="text-gray-400 text-sm mt-1">Making AP Physics fun and accessible for everyone</p>
+
+                    </div>
+
+                    <div class="flex space-x-4">
+
+                        <a href="#" class="text-gray-300 hover:text-white transition">About</a>
+
+                        <a href="#" class="text-gray-300 hover:text-white transition">Help Center</a>
+
+                        <a href="#" class="text-gray-300 hover:text-white transition">Privacy</a>
+
+                        <a href="#" class="text-gray-300 hover:text-white transition">Terms</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        // Interactive example functionality
+
+        function checkAnswer(questionNum) {
+
+            const answer = document.getElementById(`answer${questionNum}`).value;
+
+            const feedback = document.getElementById(`feedback${questionNum}`);
+
+            
+
+            if (questionNum === 1) {
+
+                // v = v₀ + at = 0 + 3 × 8 = 24 m/s
+
+                if (answer == 24) {
+
+                    feedback.textContent = "Correct! Using v = v₀ + at = 0 + 3 × 8 = 24 m/s";
+
+                    feedback.className = "ml-2 text-sm text-green-600";
+
+                } else {
+
+                    feedback.textContent = "Try again. Use v = v₀ + at";
+
+                    feedback.className = "ml-2 text-sm text-red-600";
+
+                }
+
+            } else if (questionNum === 2) {
+
+                // x = x₀ + v₀t + ½at² = 0 + 0 + ½ × 3 × 8² = 96 m
+
+                if (answer == 96) {
+
+                    feedback.textContent = "Correct! Using x = x₀ + v₀t + ½at² = 0 + 0 + ½ × 3 × 8² = 96 m";
+
+                    feedback.className = "ml-2 text-sm text-green-600";
+
+                } else {
+
+                    feedback.textContent = "Try again. Use x = x₀ + v₀t + ½at²";
+
+                    feedback.className = "ml-2 text-sm text-red-600";
+
+                }
+
+            }
+
+        }
+
+
+        // Quiz functionality
+
+        document.querySelectorAll('.quiz-option').forEach(option => {
+
+            option.addEventListener('click', function() {
+
+                // Remove selected class from all options
+
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+
+                });
+
+                
+
+                // Add selected class to clicked option
+
+                this.classList.add('selected');
+
+                
+
+                // Check if answer is correct (option C)
+
+                const selectedOption = this.getAttribute('data-option');
+
+                const correctFeedback = document.getElementById('correct-feedback');
+
+                const incorrectFeedback = document.getElementById('incorrect-feedback');
+
+                const quizFeedback = document.getElementById('quiz-feedback');
+
+                
+
+                quizFeedback.classList.remove('hidden');
+
+                
+
+                if (selectedOption === 'C') {
+
+                    this.classList.add('correct');
+
+                    correctFeedback.classList.remove('hidden');
+
+                    incorrectFeedback.classList.add('hidden');
+
+                } else {
+
+                    this.classList.add('incorrect');
+
+                    correctFeedback.classList.add('hidden');
+
+                    incorrectFeedback.classList.remove('hidden');
+
+                }
+
+            });
+
+        });
+
+
+        // Continue button functionality
+
+        document.getElementById('continue-btn').addEventListener('click', function() {
+
+            alert('Great job! Moving to the next section would be implemented in a full version.');
+
+        });
+
+    </script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'942c651cb1468f4b',t:'MTc0Nzc0OTk4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</html>
